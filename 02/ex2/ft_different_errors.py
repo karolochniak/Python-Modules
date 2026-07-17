@@ -1,19 +1,19 @@
 def test_error_types() -> None:
-    print("=== Garden Error Types Demo ===")
+    print("=== Garden Error Types Demo === \n")
     for i in range(0, 5):
         print(f"Testing operation {i}...")
         try:
             garden_operations(i)
             if i == 4:
-                print("Operation copleted successfully")
+                print("Operation completed successfully")
         except ValueError as e:
-            print(f"Caught ValueError: {e}")
+            print(f"Caught ValueError: {e} \n")
         except ZeroDivisionError as e:
-            print(f"Caught ZeroDivisionError: {e}")
+            print(f"Caught ZeroDivisionError: {e} \n")
         except FileNotFoundError as e:
-            print(f"Caught FileNotFoundError: {e}")
+            print(f"Caught FileNotFoundError: {e} \n")
         except TypeError as e:
-            print(f"Caught TypeError :{e}")
+            print(f"Caught TypeError: {e} \n")
     print("All error types tested successfully")
 
 
@@ -25,7 +25,7 @@ def garden_operations(operation_number: int) -> None:
         case 1:
             10 / 0
         case 2:
-            open("kotek.txt")
+            open("/non/existent/file")
         case 3:
             "kotek" + 5.7
 
