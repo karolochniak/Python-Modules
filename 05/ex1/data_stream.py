@@ -1,6 +1,7 @@
 import typing
 import abc
 
+
 class DataProcessor(abc.ABC):
     def __init__(self) -> None:
         self.kotek: list[tuple[int, str]] = []
@@ -97,9 +98,9 @@ class LogProcessor(DataProcessor):
             self.counter += 1
 
 
-class DataStream():
+class DataStream:
     def __init__(self) -> None:
-        self.processors : list[DataProcessor] = []
+        self.processors: list[DataProcessor] = []
 
     def register_processor(self, proc: DataProcessor) -> None:
         self.processors.append(proc)
@@ -111,61 +112,65 @@ class DataStream():
                     proc.ingest(element)
                     break
             else:
-                print(f"DataStream error: Can't process element in stream: {element}")
-
+                print(f"DataStream error: Can't process element: {element}")
 
     def print_processors_stats(self) -> None:
         print("== DataStream statistics ==")
-        if(self.processors == []):
+        if not self.processors:
             print("No processor found, no data")
         else:
             for proc in self.processors:
-                name = proc.__class__.__name__.replace("Processor", " Processor")
-                print(f"{name}: total {proc.counter} items processed \
-                      remaining {len(proc.kotek)} on processor")
+                name = proc.__class__.__name__.replace(
+                    "Processor", " Processor"
+                )
+                print(
+                    f"{name}: total {proc.counter} items processed, "
+                    f"remaining {len(proc.kotek)} on processor"
+                )
+
 
 if __name__ == "__main__":
     print("=== Code Nexus Data Stream ===")
-    
+
     print("Initialize Data Stream..")
     stream = DataStream()
     stream.print_processors_stats()
-    
+
     print("Registering Numeric Processor")
     np = NumericProcessor()
     stream.register_processor(np)
-    
+
     batch = [
-        'Hello world', 
-        [3.14, 1, 2.71], 
+        'Hello world',
+        [3.14, 1, 2.71],
         [
-            {'log_level': 'WARNING', 'log_message': 'Telnet access! Use ssh instead'}, 
+            {'log_level': 'WARNING', 'log_message': 'Telnet access! Use ssh'},
             {'log_level': 'INFO', 'log_message': 'User wil is connected'}
-        ], 
-        42, 
+        ],
+        42,
         ['Hi', 'five']
     ]
-    
+
     print(f"Send first batch of data on stream: {batch}")
     stream.process_stream(batch)
     stream.print_processors_stats()
-    
+
     print("Registering other data processors \n")
     tp = TextProcessor()
     lp = LogProcessor()
     stream.register_processor(tp)
     stream.register_processor(lp)
-    
+
     print("Send the same batch again \n")
     stream.process_stream(batch)
     stream.print_processors_stats()
-    
-    print("Consume some elements from the data processors: Numeric 3, Text 2, Log 1")
+
+    print("Consume elements from data processors: Numeric 3, Text 2, Log 1")
     for _ in range(3):
         np.output()
     for _ in range(2):
         tp.output()
     for _ in range(1):
         lp.output()
-        
+
     stream.print_processors_stats()
